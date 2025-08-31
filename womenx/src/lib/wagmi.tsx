@@ -1,10 +1,18 @@
+// src/lib/wagmi.tsx
 "use client";
-import { http, createConfig } from "wagmi";
+import { createConfig, http } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { blockdag } from "./chain";
 
 export const wagmiConfig = createConfig({
   chains: [blockdag],
-  connectors: [injected()],
-  transports: { [blockdag.id]: http(blockdag.rpcUrls.default.http[0]) },
+  connectors: [
+    injected({
+      target: "metaMask", // prefer MetaMask if multiple injected wallets
+      shimDisconnect: true,
+    }),
+  ],
+  transports: {
+    [blockdag.id]: http(blockdag.rpcUrls.default.http[0]),
+  },
 });

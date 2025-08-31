@@ -1,0 +1,76 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  wallet       String?  @unique
+  displayName  String
+  role         Role     @default(MEMBER)
+  createdAt    DateTime @default(now())
+  badges       BadgeIssue[]
+  applications Application[]            // <-- backrelation
+}
+
+model Opportunity {
+  id          String        @id @default(cuid())
+  orgId       String
+  title       String
+  summary     String
+  rewardZAR   Int
+  chainAmount String
+  status      String        @default("OPEN")
+  onchainId   String?
+  createdAt   DateTime      @default(now())
+  applications Application[]             // <-- add relation
+}
+
+model Application {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User?       @relation(fields: [userId], references: [id])
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  pitch         String      @default("")
+  status        String      @default("APPLIED")
+  txHash        String?
+  createdAt     DateTime    @default(now())
+
+  @@index([opportunityId])
+  @@index([userId])
+}
+
+model BadgeDefinition {
+  id       String       @id @default(cuid())
+  name     String
+  issuer   String
+  schema   String
+  issues   BadgeIssue[]                      // <-- backrelation
+}
+
+model BadgeIssue {
+  id          String           @id @default(cuid())
+  badgeId     String
+  badge       BadgeDefinition  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evidenceUri String
+  onchainId   String?
+  issuedAt    DateTime         @default(now())
+
+  @@index([badgeId])
+  @@index([userId])
+}
+
+enum Role {
+  MEMBER
+  ORG
+  ADMIN
+}

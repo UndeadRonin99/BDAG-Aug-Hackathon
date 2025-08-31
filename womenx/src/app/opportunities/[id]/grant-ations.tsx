@@ -5,10 +5,17 @@ import { GrantsAbi } from "@/lib/abi/Grants";
 import type { Address } from "viem";
 import { isAddress, zeroAddress } from "viem";
 
+type GrantActionsProps = {
+  oppId: string;
+  metadataUri: string;
+  chainAmountWei?: string | null; // <-- add this
+};
+
 export default function GrantActions({
   oppId,
   metadataUri,
-}: { oppId: string; metadataUri: string }) {
+  chainAmountWei,      // <-- and accept it
+}: GrantActionsProps) {
   const [amount, setAmount] = useState("");        // wei as string
   const [tokenInput, setTokenInput] = useState("native"); // user-friendly
   const { writeContract, isPending } = useWriteContract();

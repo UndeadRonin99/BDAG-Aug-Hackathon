@@ -1,8 +1,11 @@
 import { defineChain } from "viem";
-const id = Number(process.env.NEXT_PUBLIC_BLOCKDAG_CHAIN_ID || 0);
+
 export const blockdag = defineChain({
-  id,
-  name: "BlockDAG",
+  id: Number(process.env.NEXT_PUBLIC_BLOCKDAG_CHAIN_ID || 1043),
+  name: "BlockDAG Testnet",
   nativeCurrency: { name: "BDAG", symbol: "BDAG", decimals: 18 },
   rpcUrls: { default: { http: [process.env.NEXT_PUBLIC_BLOCKDAG_RPC_URL!] } },
+  blockExplorers: {
+    default: { name: "BDAGScan", url: process.env.NEXT_PUBLIC_BLOCKDAG_EXPLORER || "https://primordial.bdagscan.com" },
+  },
 });

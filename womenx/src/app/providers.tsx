@@ -1,7 +1,8 @@
+// src/app/providers.tsx
 "use client";
 import { ReactNode } from "react";
 import { WagmiProvider } from "wagmi";
-import { wagmiConfig } from "../lib/wagmi";
+import { wagmiConfig } from "@/lib/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const qc = new QueryClient();
 
